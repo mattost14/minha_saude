@@ -12,7 +12,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" >
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/basic_style.css') }}">
 
 
     {% block CSS %}
@@ -22,19 +22,23 @@
 
   <body>
     <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-sm justify-content-between">
       <a class="navbar-brand mx-5" href="/">
         <span data-feather="heart"></span>
-        Minha Saúde</a>
+        Minha Saúde
+      </a>
+
+      <!--
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto">
-            {% block navbar_left %}
-            {% endblock %}
+
           </ul>
-      </div>
+      </div>-->
+      {% block navbar_left %}
+      {% endblock %}
     </nav>
     <!-- Navbar End -->
 

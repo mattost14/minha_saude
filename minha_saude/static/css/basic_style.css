@@ -1,0 +1,13 @@
+
+
+.navbar-expand-sm {
+    background-color: #f74c65;
+    height: 50px;
+}
+.navbar-expand-sm .navbar-brand{
+    color: white;
+}
+
+.dropdown-menu a{
+    color: #f74c65;
+}
