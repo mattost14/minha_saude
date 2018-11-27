@@ -27,10 +27,11 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
     profile_image = db.Column(db.String(20), nullable=False, default='default.jpg')
+    smart_scale_key = db.Column(db.String(255))
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
     measure = db.relationship('Measure',backref=db.backref('user', lazy=True))
-    source = db.relationship('Source',backref=db.backref('user', lazy=True))
+    #source = db.relationship('Source',backref=db.backref('user', lazy=True))
 
     def __str__(self):
         return self.email
@@ -51,11 +52,10 @@ class Measure(db.Model):
     def __repr__(self):
         return {"user": self.user, "weight (kg)": self.weight}
 
-
+"""
 class Source (db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    puplic_id = db.Column(db.Integer, nullable=False)
-    source_name = db.Column(db.String(20), nullable=False)
+    key = db.Column(db.Integer, nullable=False)
     data_type = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
@@ -64,3 +64,4 @@ class Source (db.Model):
         self.source_name = source_name
         self.data_type = data_type
         self.user_id = user_id
+"""

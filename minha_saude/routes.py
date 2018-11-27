@@ -7,7 +7,7 @@ from flask import render_template, request, redirect, url_for, jsonify
 from flask_security.forms import RegisterForm, ConfirmRegisterForm
 from wtforms import StringField
 from wtforms.validators import DataRequired
-from minha_saude.models import Measure, Source
+from minha_saude.models import Measure
 from datetime import datetime, timedelta
 
 class ExtendedRegisterForm(RegisterForm):
@@ -30,8 +30,9 @@ def home():
     nextsunday.replace(hour=0, minute=0, second=0)
     weektotalsec = (nextsunday-lastsunday).total_seconds()
     #data = Measure.query.filter(Measure.date.between(today-timedelta(days=7),today)).all()
-    data = Measure.query.order_by(Measure.date.desc())
-    return render_template('peso.html', labels=labels, data=data, lasttick = nextsunday, firsttick= lastsunday)
+    data=Measure.query.filter(Measure.user_id==current_user.id).order_by(Measure.date.desc()).all()
+    #data = data.order_by(data.date.desc())
+    return render_template('peso.html', user=current_user, labels=labels, data=data, lasttick = nextsunday, firsttick= lastsunday)
 
 @app.route('/peso/add', methods =['POST'])
 @login_required

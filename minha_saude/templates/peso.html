@@ -44,6 +44,7 @@
                     <div class="col-9">
                         <a href="#addDataModal" class="btn" data-toggle="modal"><i class="material-icons" data-feather="plus-circle">&#xE147;</i></a>
                         <a href="#deleteDataModal" id="deleteMultipleRows" class="btn" data-toggle="modal"><i class="material-icons" data-feather="trash-2">&#xE15C;</i></a>
+                        <a href="#addSmartScale" id="addScaleKey_btn" class="btn" data-toggle="modal"><i class="material-icons" data-feather="rss">&#xE15C;</i></a>
                     </div>
 
                 </div>
@@ -126,8 +127,38 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                            <input type="submit" class="btn btn-success" value="Add">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                            <input type="submit" class="btn btn-success" value="Adicionar">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Smart Scale Modal HTML -->
+        <div id="addSmartScale" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post" action="\peso\add">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Balança IoT</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Chave da Balança</label>
+                                <input name="data_input" type="text" class="form-control" id="scale_key_form" placeholder="{{user.smart_scale_key}}">
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="edit_checkbox">
+                                    <label class="form-check-label" for="edit_checkbox">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                            <input type="submit" class="btn btn-success" value="Salvar">
                         </div>
                     </form>
                 </div>
@@ -175,8 +206,8 @@
                             <p>Tem certeza que deseja deletar o dado?</p>
                         </div>
                         <div class="modal-footer">
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                            <input type="submit" class="btn btn-danger" value="Delete">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                            <input type="submit" class="btn btn-danger" value="Deletar">
                         </div>
                     </form>
                 </div>
@@ -195,6 +226,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.6.3/chartjs-plugin-zoom.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<script>
+    //Checkbox to enable/disable smart scale key input
+    $('#addScaleKey_btn').click(function (){
+        document.getElementById('scale_key_form').disabled=true;
+        document.getElementById('edit_checkbox').onchange = function() {
+            document.getElementById('scale_key_form').disabled = !this.checked;
+        };
+    });
+</script>
+
 
 <script>
     //var ctx = document.getElementById("myChart");
@@ -293,65 +335,65 @@
     };
 </script>
 
-    <script>
-     //Datetime picker script
-        $(function () {
-            $('#datetimepicker1').datetimepicker({format: 'DD/MM/YY HH:mm'
+<script>
+ //Datetime picker script
+    $(function () {
+        $('#datetimepicker1').datetimepicker({format: 'DD/MM/YY HH:mm'
+        });
+    });
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    // Activate tooltip
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // Select/Deselect checkboxes
+    var checkbox = $('table tbody input[type="checkbox"]');
+    $("#selectAll").click(function(){
+        if(this.checked){
+            checkbox.each(function(){
+                this.checked = true;
             });
-        });
-    </script>
-
-    <script type="text/javascript">
-    $(document).ready(function(){
-        // Activate tooltip
-        $('[data-toggle="tooltip"]').tooltip();
-
-        // Select/Deselect checkboxes
-        var checkbox = $('table tbody input[type="checkbox"]');
-        $("#selectAll").click(function(){
-            if(this.checked){
-                checkbox.each(function(){
-                    this.checked = true;
-                });
-            } else{
-                checkbox.each(function(){
-                    this.checked = false;
-                });
-            }
-        });
-        checkbox.click(function(){
-            if(!this.checked){
-                $("#selectAll").prop("checked", false);
-            }
-        });
-
-        //Pass row id to Delete Modal Form
-        $('.delete').click(function () {
-        	var action = '/deleterow/' + '?id='+$(this).data('id');
-        	console.log(action);
-    		$('#delete_modalform').attr('action',action);
-
-		});
-
-		//Pass checked rows ids to Delete Modal Form
-        $('#deleteMultipleRows').click(function () {
-            var checkbox = $('table tbody input[type="checkbox"]');
-            var checkedRowsIds = "";
-            checkbox.each( function(){
-                if(this.checked){
-                    if(checkedRowsIds!=""){
-                        checkedRowsIds = checkedRowsIds + ',' + $(this).data('id');
-                    }else{
-                        checkedRowsIds = checkedRowsIds + $(this).data('id');
-                    }
-                }
+        } else{
+            checkbox.each(function(){
+                this.checked = false;
             });
-        	var action = '/deleterow/' + '?id='+ checkedRowsIds;
-        	console.log(action);
-    		$('#delete_modalform').attr('action',action);
-		});
+        }
+    });
+    checkbox.click(function(){
+        if(!this.checked){
+            $("#selectAll").prop("checked", false);
+        }
+    });
+
+    //Pass row id to Delete Modal Form
+    $('.delete').click(function () {
+        var action = '/deleterow/' + '?id='+$(this).data('id');
+        console.log(action);
+        $('#delete_modalform').attr('action',action);
 
     });
-    </script>
+
+    //Pass checked rows ids to Delete Modal Form
+    $('#deleteMultipleRows').click(function () {
+        var checkbox = $('table tbody input[type="checkbox"]');
+        var checkedRowsIds = "";
+        checkbox.each( function(){
+            if(this.checked){
+                if(checkedRowsIds!=""){
+                    checkedRowsIds = checkedRowsIds + ',' + $(this).data('id');
+                }else{
+                    checkedRowsIds = checkedRowsIds + $(this).data('id');
+                }
+            }
+        });
+        var action = '/deleterow/' + '?id='+ checkedRowsIds;
+        console.log(action);
+        $('#delete_modalform').attr('action',action);
+    });
+
+});
+</script>
 
 {% endblock %}
