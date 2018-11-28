@@ -139,7 +139,7 @@
         <div id="addSmartScale" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="post" action="\peso\add">
+                    <form id="add_SmartScale" method="post">
                         <div class="modal-header">
                             <h4 class="modal-title">Balança IoT</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -147,7 +147,7 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label>Chave da Balança</label>
-                                <input name="data_input" type="text" class="form-control" id="scale_key_form" placeholder="{{user.smart_scale_key}}">
+                                <input name="smart_scale_key_input" type="text" class="form-control" id="scale_key_form" value="{{user.smart_scale_key}}">
                             </div>
                             <div class="form-group">
                                 <div class="form-check">
@@ -158,7 +158,8 @@
                         </div>
                         <div class="modal-footer">
                             <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                            <input type="submit" class="btn btn-success" value="Salvar">
+                            <input id="salvar_btn" type="submit" class="btn btn-success" value="Salvar">
+                            <!--<input id="salvar_btn" type="submit" class="btn btn-success" value="Salvar">-->
                         </div>
                     </form>
                 </div>
@@ -235,6 +236,29 @@
             document.getElementById('scale_key_form').disabled = !this.checked;
         };
     });
+
+    $('#').click(function val(){
+       var action = '/smart_scale_key/update';
+       console.log(action);
+       var key = document.getElementById('scale_key_form').value;
+       var form = document.getElementById('scale_key_form');
+       if(key!='' && form.disabled==false){
+            $('#add_SmartScale').attr('action',action);
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        alert('{{message}}');
+                    {% endfor %}
+              {% endif %}
+            {% endwith %}
+            return true;
+       }
+       else{
+            console.log('Invalid input');
+            return false;
+        }
+       //$('#add_SmartScale').attr('action',action);
+    };
 </script>
 
 

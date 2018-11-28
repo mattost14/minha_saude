@@ -3,12 +3,13 @@ from flask_security import Security, SQLAlchemyUserDatastore, \
     login_required, current_user
 from minha_saude.models import User, Role
 from minha_saude import app, db, api, Resource
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import render_template, request, redirect, flash, url_for, jsonify
 from flask_security.forms import RegisterForm, ConfirmRegisterForm
 from wtforms import StringField
 from wtforms.validators import DataRequired
 from minha_saude.models import Measure
 from datetime import datetime, timedelta
+from sqlalchemy.exc import IntegrityError
 
 class ExtendedRegisterForm(RegisterForm):
     first_name = StringField('First Name', [DataRequired()])
@@ -45,6 +46,19 @@ def addData():
     db.session.commit()
     return redirect(url_for('home'))
 
+@app.route('/smart_scale_key/update', methods =['POST'])
+@login_required
+def chageSmartScaleKey():
+    key = request.form['smart_scale_key_input']
+    try:
+        User.query.filter_by(id=current_user.id).update(dict(smart_scale_key=key))
+        db.session.commit()
+        return redirect(url_for('home'))
+    except IntegrityError:
+        db.session.rollback()
+        flash('Chave já utilizada por outro usuário')
+        return redirect(url_for('home'))
+
 @app.route('/deleterow/', methods=['POST'])
 @login_required
 def delete():
@@ -66,7 +80,7 @@ class Weight(Resource):
 
     def post(self):
         data = request.get_json()
-        user=Source.query.filter(Source.puplic_id==int(data["source_public_id"])).first()
+        user=User.query.filter_by(smart_scale_key=data["source_public_key"]).first()
         if not user:
             return jsonify({'Message': 'No user found for this source public id.'})
         user_id = user.user_id

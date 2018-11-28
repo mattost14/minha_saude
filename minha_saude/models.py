@@ -27,7 +27,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
     profile_image = db.Column(db.String(20), nullable=False, default='default.jpg')
-    smart_scale_key = db.Column(db.String(255))
+    smart_scale_key = db.Column(db.String(255), unique=True)
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
     measure = db.relationship('Measure',backref=db.backref('user', lazy=True))
@@ -41,11 +41,13 @@ class Measure(db.Model):
     date = db.Column(db.DateTime,nullable=False, default=datetime.utcnow)
     weight = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    source = db.Column(db.String(50),nullable=False, default="Manual") #Options: Manual, IoT
 
-    def __init__(self, date, weight, id):
+    def __init__(self, date, weight, id, source):
         self.date = date
         self.weight = weight
         self.user_id = id
+        self.source = source
 
     def __str__(self):
         return {"user": self.user, "weight (kg)": self.weight}
